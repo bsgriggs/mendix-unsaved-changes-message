@@ -1,16 +1,17 @@
-import { OnBeforeUnloadPreviewProps } from "../typings/OnBeforeUnloadProps";
+import { UnsavedChangesMessagePreviewProps } from "../typings/UnsavedChangesMessageProps";
+import { hidePropertiesIn } from "./utils/PageEditorUtils";
 
 export type Platform = "web" | "desktop";
 
 export type Properties = PropertyGroup[];
 
-type PropertyGroup = {
+export type PropertyGroup = {
     caption: string;
     propertyGroups?: PropertyGroup[];
     properties?: Property[];
 };
 
-type Property = {
+export type Property = {
     key: string;
     caption: string;
     description?: string;
@@ -98,32 +99,36 @@ export type PreviewProps =
     | DatasourceProps;
 
 export function getProperties(
-    _values: OnBeforeUnloadPreviewProps,
+    _values: UnsavedChangesMessagePreviewProps,
     defaultProperties: Properties /* , target: Platform*/
 ): Properties {
     // Do the values manipulation here to control the visibility of properties in Studio and Studio Pro conditionally.
-    /* Example
-    if (values.myProperty === "custom") {
-        delete defaultProperties.properties.myOtherProperty;
+    if (_values.observeMode === "browser") {
+        hidePropertiesIn(defaultProperties, _values, [
+            "watchingClassName",
+            "bodyText",
+            "proceedCaption",
+            "cancelCaption",
+            "onProceed"
+        ]);
     }
-    */
+
     return defaultProperties;
 }
 
-// export function check(_values: OnBeforeUnloadPreviewProps): Problem[] {
-//     const errors: Problem[] = [];
-//     // Add errors to the above array to throw errors in Studio and Studio Pro.
-//     /* Example
-//     if (values.myProperty !== "custom") {
-//         errors.push({
-//             property: `myProperty`,
-//             message: `The value of 'myProperty' is different of 'custom'.`,
-//             url: "https://github.com/myrepo/mywidget"
-//         });
-//     }
-//     */
-//     return errors;
-// }
+export function check(_values: UnsavedChangesMessagePreviewProps): Problem[] {
+    const errors: Problem[] = [];
+    // Add errors to the above array to throw errors in Studio and Studio Pro.
+    if (_values.observeMode !== "browser" && _values.onProceed === null) {
+        errors.push({
+            property: `onProceed`,
+            message: `On Proceed is required. It should be a Microflow or Nanoflow that rollsback the form object.`,
+            url: "https://github.com/bsgriggs/mendix-onBeforeUnload/blob/master/README.md"
+        });
+    }
+
+    return errors;
+}
 
 // export function getPreview(values: OnBeforeUnloadPreviewProps, isDarkMode: boolean): PreviewProps {
 //     // Customize your pluggable widget appearance for Studio Pro.

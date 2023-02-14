@@ -1,8 +1,8 @@
 {
-  "name": "onbeforeunload",
-  "widgetName": "OnBeforeUnload",
+  "name": "unsavedchangesmessage",
+  "widgetName": "UnsavedChangesMessage",
   "version": "1.0.0",
-  "description": "Dynamically trigger the browser's onBeforeUnload event to",
+  "description": "Mendix widget to block the user from closing the browser, closing the tab, or clicking a Mendix navigation when they have unsaved changes",
   "copyright": "Benjamin Griggs 2023",
   "author": "Benjamin Griggs",
   "engines": {

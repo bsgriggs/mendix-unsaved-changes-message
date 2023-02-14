@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="mendix.onbeforeunload.OnBeforeUnload" pluginWidget="true" needsEntityContext="true"
+    offlineCapable="true"
+    supportedPlatform="Web"
+    xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
+    <name>On Before Unload</name>
+    <description>Dynamically trigger the browser's onBeforeUnload event. Can be used together with the Unsaved Changes Message module to more robustly warn the user of their unsaved changes.</description>
+    <helpUrl>https://github.com/bsgriggs/mendix-onBeforeUnload/blob/master/README.md</helpUrl>
+    <properties>
+        <propertyGroup caption="General">
+            <propertyGroup caption="General">
+                <property key="observeMode" type="enumeration" defaultValue="both">
+                    <caption>Observe</caption>
+                    <description>What types of navigation should the widget prevent?</description>
+                    <enumerationValues>
+                        <enumerationValue key="mendix">Mendix</enumerationValue>
+                        <enumerationValue key="browser">Browser</enumerationValue>
+                        <enumerationValue key="both">Both</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="block" type="expression" required="true">
+                    <caption>Block Exit?</caption>
+                    <description>Boolean expression on the parent data view that determines whether or not to show the message.</description>
+                    <returnType type="Boolean" />
+                </property>
+                <property key="debugMode" type="boolean" defaultValue="false">
+                    <caption>Debug Mode?</caption>
+                    <description>DISABLE PRIOR TO PRODUCTION DEPLOYMENT</description>
+                </property>
+                <property key="watchingClassName" type="string" required="true"
+                    defaultValue="on-nav-watch">
+                    <caption>Watching Class Name</caption>
+                    <description>The CSS class used to find the actions you want to prevent. (i.e. your navigation menu should have this class)</description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Actions">
+                <property key="onProceed" type="action" required="true">
+                    <caption>On Proceed</caption>
+                    <description>Mx Action fired when the user clicks on the Proceed button.</description>
+                </property>
+                <property key="onChangeBlock" type="action" required="false">
+                    <caption>On Change Block</caption>
+                    <description>MxAction fired when the result of the Block Exit expression changes.</description>
+                </property>
+            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Text">
+            <property key="bodyText" type="textTemplate" required="true">
+                <caption>Body Text</caption>
+                <description>The main text content. All text in this tab ONLY affects Mendix navigations. The browser close text cannot be customized.</description>
+                <translations>
+                    <translation lang="en_US">You have unsaved changes, are you sure you want to discard the changes and leave?</translation>
+                </translations>
+            </property>
+            <property key="proceedCaption" type="textTemplate" required="true">
+                <caption>Proceed Caption</caption>
+                <description>The text for the confirm button. All text in this tab ONLY affects Mendix navigations. The browser close text cannot be customized.</description>
+                <translations>
+                    <translation lang="en_US">Discard</translation>
+                </translations>
+            </property>
+            <property key="cancelCaption" type="textTemplate" required="true">
+                <caption>Cancel Caption</caption>
+                <description>The text for the cancel button. All text in this tab ONLY affects Mendix navigations. The browser close text cannot be customized.</description>
+                <translations>
+                    <translation lang="en_US">Cancel</translation>
+                </translations>
+            </property>
+        </propertyGroup>
+        <propertyGroup caption="Common">
+            <systemProperty key="Name"></systemProperty>
+            <systemProperty key="Visibility"></systemProperty>
+        </propertyGroup>
+    </properties>
+</widget>
