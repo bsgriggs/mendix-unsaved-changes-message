@@ -42,7 +42,7 @@ function onClickHandler(
     }
 }
 
-export function OnBeforeUnload({
+export function UnsavedChangesMessage({
     block,
     name,
     debugMode,
