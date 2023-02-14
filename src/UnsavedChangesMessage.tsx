@@ -3,7 +3,6 @@ import { useBeforeunload } from "react-beforeunload";
 import { UnsavedChangesMessageContainerProps } from "../typings/UnsavedChangesMessageProps";
 import { ValueStatus, ActionValue } from "mendix";
 import Blocker from "./components/Blocker";
-// import AdviceFunction from "./utils/AdviceFunction";
 import MxConfirmation from "./utils/MxConfirmation";
 import "./ui/UnsavedChangesMessage.css";
 
