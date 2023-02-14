@@ -18,7 +18,7 @@ export default function Blocker({ watchingElement, debugMode, onClick }: Blocker
                 debugMode && console.info("blocker on click", { x: event.clientX, y: event.clientY });
                 onClick(event.clientX, event.clientY);
             }}
-            title={debugMode ? "This element's action is being superseded by the On Before Unload widget" : undefined}
+            title={debugMode ? "This element's action is being superseded by the Unsaved Changes Message widget" : undefined}
             className="blocker"
             style={{
                 left: position?.x || 0,
