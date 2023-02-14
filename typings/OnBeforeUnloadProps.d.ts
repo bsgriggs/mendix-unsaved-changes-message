@@ -14,6 +14,8 @@ export interface OnBeforeUnloadContainerProps {
     block: DynamicValue<boolean>;
     debugMode: boolean;
     onChangeBlock?: ActionValue;
+    watchingClassName: string;
+    onDiscard?: ActionValue;
 }
 
 export interface OnBeforeUnloadPreviewProps {
@@ -28,4 +30,6 @@ export interface OnBeforeUnloadPreviewProps {
     block: string;
     debugMode: boolean;
     onChangeBlock: {} | null;
+    watchingClassName: string;
+    onDiscard: {} | null;
 }

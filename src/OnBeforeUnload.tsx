@@ -2,14 +2,23 @@ import { ReactElement, createElement, useState, useEffect } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { OnBeforeUnloadContainerProps } from "../typings/OnBeforeUnloadProps";
 import { ValueStatus, ActionValue } from "mendix";
+import AdviceFunction from "./utils/AdviceFunction";
 
 const callMxAction = (action: ActionValue | undefined): void => {
-  if (action !== undefined && action.canExecute) {
-      action.execute();
-  }
+    if (action !== undefined && action.canExecute) {
+        action.execute();
+    }
 };
 
-export function OnBeforeUnload({ block, name, debugMode, style, onChangeBlock }: OnBeforeUnloadContainerProps): ReactElement {
+export function OnBeforeUnload({
+    block,
+    name,
+    debugMode,
+    style,
+    onChangeBlock,
+    watchingClassName,
+    onDiscard
+}: OnBeforeUnloadContainerProps): ReactElement {
     const [blocking, setBlocking] = useState<boolean>(false);
 
     useEffect(() => {
@@ -17,7 +26,17 @@ export function OnBeforeUnload({ block, name, debugMode, style, onChangeBlock }:
             setBlocking(block.value as boolean);
             callMxAction(onChangeBlock);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [block.value]);
+
+    useEffect(()=>{
+        const elements = Array.from(document.getElementsByClassName(watchingClassName));
+        console.info("elements", elements);
+        elements.forEach((element)=>{
+            const htmlElement = element as HTMLElement;
+            AdviceFunction(htmlElement.click, blocking, "Are you sure", "Discard",onDiscard,"Cancel" );
+        });
+    }, [])
 
     useBeforeunload(event => {
         if (blocking) {

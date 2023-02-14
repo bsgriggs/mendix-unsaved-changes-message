@@ -1,5 +1,5 @@
 ## OnBeforeUnload
-Dynamically trigger the browser's onBeforeUnload event and show a blocking message of unsaved changes when the user attempts to close the browser tab or the entire browser. Can be used together with the Unsaved Changes Message module to more robustly warn the user of their unsaved changes on navigation within Mendix.
+Dynamically trigger the browser's onBeforeUnload event to show a blocking message of unsaved changes when the user attempts to close the browser tab or the entire browser. Can be used together with the Unsaved Changes Message module to more robustly warn the user of their unsaved changes on navigation within Mendix.
 
 ## Features
 - Based on a boolean expression, dynamically enable the browsers onBeforeUnload event. 
@@ -9,13 +9,13 @@ Dynamically trigger the browser's onBeforeUnload event and show a blocking messa
   - I would be willing to add this functionality if anyone can find a way
 
 ## Usage
-[step by step instructions]
+1. Download the 
 
 ## Demo project
 [link to sandbox]
 
 ## Issues, suggestions and feature requests
-[link to GitHub issues]
+[[link to GitHub issues]](https://github.com/bsgriggs/mendix-onBeforeUnload)
 
 ## Development and contribution
 

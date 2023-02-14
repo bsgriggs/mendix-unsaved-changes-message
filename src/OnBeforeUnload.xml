@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
     <name>On Before Unload</name>
     <description>Dynamically trigger the browser's onBeforeUnload event. Can be used together with the Unsaved Changes Message module to more robustly warn the user of their unsaved changes.</description>
-    <icon/>
+    <helpUrl>https://github.com/bsgriggs/mendix-onBeforeUnload/blob/master/README.md</helpUrl>
     <properties>
         <propertyGroup caption="General">
             <property key="block" type="expression" required="true" >
@@ -20,6 +20,14 @@
             <property key="onChangeBlock" type="action" required="false">
                 <caption>On Change Block</caption>
                 <description>MxAction fired when the result of the Block Exit expression changes. You can use this action to block Mendix navigation flows (see demo in the ReadMe).</description>
+            </property>
+            <property key="watchingClassName" type="string" required="true" defaultValue="on-nav-watch">
+                <caption>Watching Class Name</caption>
+                <description>The CSS class name of any button / navigation item to override when block exit is true</description>
+            </property>
+            <property key="onDiscard" type="action" required="true">
+                <caption>On Discard</caption>
+                <description>MxAction fired when the user clicks the discard button on an internal navigation</description>
             </property>
         </propertyGroup>
         <propertyGroup caption="Common">
