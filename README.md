@@ -40,7 +40,9 @@ Mendix widget to block the user from closing the browser, closing the tab, or cl
 | Navigation in layout | Cancel button |  
 | ------------- | ------------- |  
 | ![navigation](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/navigation.png)   | ![cancel](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/cancel.png)   |  
-
+  
+*Note: be sure to put the class on the layout container and NOT the navigation directly. The nav menu has its full width in the DOM even when the menu is collapsed*  
+  
 6. Set the On Process action as either a Microflow or a Nanoflow that performs a rollback on your form object. If you're using a non-persistent form object, then you might need to delete the objects. 
 ![OnProceed](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/OnProceed.png)  
 7. All set! Run the project, make some changes. 
