@@ -121,13 +121,13 @@ export function getProperties(
 export function check(_values: UnsavedChangesMessagePreviewProps): Problem[] {
     const errors: Problem[] = [];
     // Add errors to the above array to throw errors in Studio and Studio Pro.
-    if (_values.observeMode !== "browser" && _values.onProceed === null) {
-        errors.push({
-            property: `onProceed`,
-            message: `On Proceed is required. It should be a Microflow or Nanoflow that rollsback the form object.`,
-            url: "https://github.com/bsgriggs/mendix-onBeforeUnload/blob/master/README.md"
-        });
-    }
+    // if (_values.observeMode !== "browser" && _values.onProceed === null) {
+    //     errors.push({
+    //         property: `onProceed`,
+    //         message: `On Proceed is required. It should be a Microflow or Nanoflow that rollsback the form object.`,
+    //         url: "https://github.com/bsgriggs/mendix-onBeforeUnload/blob/master/README.md"
+    //     });
+    // }
 
     return errors;
 }

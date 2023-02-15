@@ -22,25 +22,20 @@ function onClickHandler(
     onProceed: ActionValue | undefined,
     debugMode: boolean
 ): void {
-    if (onProceed && onProceed.canExecute) {
-        MxConfirmation(bodyText, proceedCaption, cancelCaption, () => {
-            callMxAction(onProceed);
-            const elementsAtPoint = document.elementsFromPoint(x, y);
-            if (elementsAtPoint.length > 1) {
-                // should be at least 2 elements, the temp element from this widget and the original element
-                const htmlElement = elementsAtPoint[1] as HTMLElement;
-                // eslint-disable-next-line no-unused-expressions
-                debugMode && console.info("clicking element: ", htmlElement);
-                htmlElement.click();
-            } else {
-                // eslint-disable-next-line no-unused-expressions
-                debugMode && console.warn("No elements found under the points: {x: " + x + ", y: " + y + "}");
-            }
-        });
-    } else {
-        // eslint-disable-next-line no-unused-expressions
-        debugMode && console.warn("No permission to execute the onProceed action");
-    }
+    MxConfirmation(bodyText, proceedCaption, cancelCaption, () => {
+        callMxAction(onProceed);
+        const elementsAtPoint = document.elementsFromPoint(x, y);
+        if (elementsAtPoint.length > 1) {
+            // should be at least 2 elements, the temp element from this widget and the original element
+            const htmlElement = elementsAtPoint[1] as HTMLElement;
+            // eslint-disable-next-line no-unused-expressions
+            debugMode && console.info("clicking element: ", htmlElement);
+            htmlElement.click();
+        } else {
+            // eslint-disable-next-line no-unused-expressions
+            debugMode && console.warn("No elements found under the points: {x: " + x + ", y: " + y + "}");
+        }
+    });
 }
 
 export function UnsavedChangesMessage({
