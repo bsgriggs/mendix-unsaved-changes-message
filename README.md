@@ -41,7 +41,10 @@ Mendix widget to block the user from closing the browser, closing the tab, or cl
 | ------------- | ------------- |  
 | ![navigation](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/navigation.png)   | ![cancel](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/cancel.png)   |  
   
-*Note: be sure to put the class on the layout container and NOT the navigation directly. The nav menu has its full width in the DOM even when the menu is collapsed*  
+*Note: the Navigation Menu class should be the class on the navigation menu itself while the Sidebar class should be the class on the highest level of that layout section. These are used to find the navigation menu and the sidebar in the DOM and adds a watcher for when the menu is opened and closed. If you do not have a collapsable menu, you do not need Navigation Menu or Sidebar Class*. 
+
+![sidebar](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/sidebar.png)  
+*Sidebar Class*
   
 6. Set the On Process action as either a Microflow or a Nanoflow that performs a rollback on your form object. If you're using a non-persistent form object, then you might need to delete the objects. 
 ![OnProceed](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/OnProceed.png)  
