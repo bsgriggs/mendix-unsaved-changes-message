@@ -11,7 +11,6 @@ interface BlockerProps {
 
 export default function Blocker({ watchingElement, debugMode, onClick, navbarWidth }: BlockerProps): ReactElement {
     const position = usePositionObserver(watchingElement, true);
-    console.info(navbarWidth);
     return (
         <div
             onClick={(event: MouseEvent) => {

@@ -34,12 +34,12 @@
                     <caption>Watching Class</caption>
                     <description>The CSS class used to find the actions you want to prevent.</description>
                 </property>
-                <property key="sidebarClass" type="string" required="true"
+                <property key="sidebarClass" type="string" required="false"
                     defaultValue="region-sidebar">
                     <caption>Sidebar Class</caption>
                     <description>The CSS class used to find the navbar and watch its width changes.</description>
                 </property>
-                <property key="navigationMenuClass" type="string" required="true"
+                <property key="navigationMenuClass" type="string" required="false"
                     defaultValue="mx-navigationtree">
                     <caption>Navigation Menu Class</caption>
                     <description>The CSS class used determine if the element being watch is the navigation tree</description>
