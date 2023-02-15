@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<widget id="mendix.unsavedchangesmessage.UnsavedChangesMessage" pluginWidget="true" needsEntityContext="true"
+<widget id="mendix.unsavedchangesmessage.UnsavedChangesMessage" pluginWidget="true"
+    needsEntityContext="true"
     offlineCapable="true"
     supportedPlatform="Web"
     xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -28,10 +29,20 @@
                     <caption>Debug Mode?</caption>
                     <description>DISABLE PRIOR TO PRODUCTION DEPLOYMENT</description>
                 </property>
-                <property key="watchingClassName" type="string" required="true"
+                <property key="watchingClass" type="string" required="true"
                     defaultValue="unsaved-changes-block">
-                    <caption>Watching Class Name</caption>
-                    <description>The CSS class used to find the actions you want to prevent. (e.g. your navigation menu should have this class)</description>
+                    <caption>Watching Class</caption>
+                    <description>The CSS class used to find the actions you want to prevent.</description>
+                </property>
+                <property key="sidebarClass" type="string" required="true"
+                    defaultValue="region-sidebar">
+                    <caption>Sidebar Class</caption>
+                    <description>The CSS class used to find the navbar and watch its width changes.</description>
+                </property>
+                <property key="navigationMenuClass" type="string" required="true"
+                    defaultValue="mx-navigationtree">
+                    <caption>Navigation Menu Class</caption>
+                    <description>The CSS class used determine if the element being watch is the navigation tree</description>
                 </property>
             </propertyGroup>
             <propertyGroup caption="Actions">

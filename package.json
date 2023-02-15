@@ -11,7 +11,7 @@
   "license": "MIT",
   "config": {
     "projectPath": "../../",
-    "mendixHost": "http://localhost:8080",
+    "mendixHost": "http://localhost:8082",
     "developmentPort": 3000
   },
   "packagePath": "mendix",

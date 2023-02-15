@@ -105,11 +105,13 @@ export function getProperties(
     // Do the values manipulation here to control the visibility of properties in Studio and Studio Pro conditionally.
     if (_values.observeMode === "browser") {
         hidePropertiesIn(defaultProperties, _values, [
-            "watchingClassName",
+            "watchingClass",
             "bodyText",
             "proceedCaption",
             "cancelCaption",
-            "onProceed"
+            "onProceed",
+            "sidebarClass",
+            "navigationMenuClass"
         ]);
     }
 

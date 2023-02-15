@@ -11,7 +11,7 @@ interface BlockerProps {
 
 export default function Blocker({ watchingElement, debugMode, onClick, navbarWidth }: BlockerProps): ReactElement {
     const position = usePositionObserver(watchingElement, true);
-    console.info(navbarWidth)
+    console.info(navbarWidth);
     return (
         <div
             onClick={(event: MouseEvent) => {
@@ -28,7 +28,7 @@ export default function Blocker({ watchingElement, debugMode, onClick, navbarWid
             style={{
                 left: position?.x || 0,
                 top: position?.y || 0,
-                width: navbarWidth ? navbarWidth : (position?.width || 0),
+                width: navbarWidth ? navbarWidth : position?.width || 0,
                 height: position?.height || 0,
                 backgroundColor: debugMode ? "red" : "white",
                 opacity: debugMode ? 0.6 : 0

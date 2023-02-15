@@ -16,7 +16,9 @@ export interface UnsavedChangesMessageContainerProps {
     observeMode: ObserveModeEnum;
     block: DynamicValue<boolean>;
     debugMode: boolean;
-    watchingClassName: string;
+    watchingClass: string;
+    sidebarClass: string;
+    navigationMenuClass: string;
     onProceed?: ActionValue;
     onChangeBlock?: ActionValue;
     bodyText: DynamicValue<string>;
@@ -36,7 +38,9 @@ export interface UnsavedChangesMessagePreviewProps {
     observeMode: ObserveModeEnum;
     block: string;
     debugMode: boolean;
-    watchingClassName: string;
+    watchingClass: string;
+    sidebarClass: string;
+    navigationMenuClass: string;
     onProceed: {} | null;
     onChangeBlock: {} | null;
     bodyText: string;

@@ -5,6 +5,7 @@ import { ValueStatus, ActionValue } from "mendix";
 import Blocker from "./components/Blocker";
 import MxConfirmation from "./utils/MxConfirmation";
 import "./ui/UnsavedChangesMessage.css";
+import { usePositionObserver } from "./utils/usePositionObserver";
 
 const callMxAction = (action: ActionValue | undefined): void => {
     if (action !== undefined && action.canExecute) {
@@ -48,15 +49,32 @@ export function UnsavedChangesMessage({
     debugMode,
     style,
     onChangeBlock,
-    watchingClassName,
+    watchingClass,
     bodyText,
     cancelCaption,
     proceedCaption,
     onProceed,
-    observeMode
+    observeMode,
+    sidebarClass,
+    navigationMenuClass
 }: UnsavedChangesMessageContainerProps): ReactElement {
     const [blocking, setBlocking] = useState<boolean>(false);
     const [watchingElements, setWatchingElements] = useState<HTMLElement[]>([]);
+    const [navbar, setNavbar] = useState<Element | null>(null);
+
+    // get navbar
+    if (observeMode !== "browser") {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+            const navbarList = document.getElementsByClassName(sidebarClass);
+            if (navbarList.length > 0) {
+                setNavbar(navbarList[0]);
+            }
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        }, []);
+    }
+
+    const navbarPosition = usePositionObserver(navbar, blocking);
 
     // maintain blocking status
     useEffect(() => {
@@ -71,7 +89,7 @@ export function UnsavedChangesMessage({
         // retrieve and store elements by class name
         // eslint-disable-next-line react-hooks/rules-of-hooks
         useEffect(() => {
-            const elements = document.getElementsByClassName(watchingClassName);
+            const elements = document.getElementsByClassName(watchingClass);
             if (elements.length > 0) {
                 const elementsArray = Array.from(elements);
                 // eslint-disable-next-line no-unused-expressions
@@ -85,7 +103,7 @@ export function UnsavedChangesMessage({
             } else {
                 setWatchingElements([]);
                 // eslint-disable-next-line no-unused-expressions
-                debugMode && console.warn("No elements found with classname: " + watchingClassName);
+                debugMode && console.warn("No elements found with classname: " + watchingClass);
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [blocking]);
@@ -115,6 +133,11 @@ export function UnsavedChangesMessage({
                                 key={index}
                                 watchingElement={htmlElement}
                                 debugMode={debugMode}
+                                navbarWidth={
+                                    htmlElement.classList.contains(navigationMenuClass)
+                                        ? navbarPosition?.width
+                                        : undefined
+                                }
                                 onClick={(x, y) =>
                                     onClickHandler(
                                         x,
