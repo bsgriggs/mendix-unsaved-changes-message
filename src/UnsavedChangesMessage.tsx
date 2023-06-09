@@ -116,8 +116,8 @@ export function UnsavedChangesMessage({
     return (
         <div id={name} style={style} className={"unsaved-changes-message"}>
             {debugMode && (
-                <p className={`alert alert-${blocking ? "danger" : "warning"}`}>
-                    {"On Before Unload is currently " + (blocking ? "blocking" : "not blocking")}
+                <p className={`alert alert-${blocking ? "danger" : "info"}`}>
+                    {"DEBUG MODE: Unsaved Changes Message is " + (blocking ? "blocking" : "not blocking")}
                 </p>
             )}
             {observeMode !== "browser" && (

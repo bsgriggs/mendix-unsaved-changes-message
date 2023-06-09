@@ -1,7 +1,7 @@
 /**
  * This file was generated from UnsavedChangesMessage.xml
  * WARNING: All changes made to this file will be overwritten
- * @author Mendix Widgets Framework Team
+ * @author Mendix UI Content Team
  */
 import { CSSProperties } from "react";
 import { ActionValue, DynamicValue } from "mendix";
