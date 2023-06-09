@@ -6,6 +6,6 @@
 } */
 .unsaved-changes-message .element-list .blocker{
     position: fixed;
-    z-index: 999999;
+    /* z-index: 999999; */
     cursor: pointer;
 }
