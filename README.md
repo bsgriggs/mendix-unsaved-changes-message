@@ -9,6 +9,7 @@ Mendix widget to block the user from closing the browser, closing the tab, or cl
 
 ## Features
 - Based on a boolean expression, dynamically enable the browsers onBeforeUnload event. 
+- Based on a boolean expression, on any Mendix navigation execute a flow.
 - Based on a boolean expression, block any Mendix navigation with a confirmation message.
 - Tested and works in Chrome, Safari, Microsoft Edge, and Firefox
 

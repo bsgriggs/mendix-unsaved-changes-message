@@ -25,6 +25,11 @@
                     <description>Boolean expression that determines whether or not to show the message.</description>
                     <returnType type="Boolean" />
                 </property>
+                <property key="showChoicePopup" type="boolean" defaultValue="true">
+                    <caption>Show choice popup?</caption>
+                    <description>If true, popup will get shown: Proceed or Cancel?
+If false, no popup will be shown. Action OnProcess will immediately get executed.</description>
+                </property>
                 <property key="debugMode" type="boolean" defaultValue="true">
                     <caption>Debug Mode?</caption>
                     <description>DISABLE PRIOR TO PRODUCTION DEPLOYMENT</description>

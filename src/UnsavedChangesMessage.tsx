@@ -14,6 +14,7 @@ const callMxAction = (action: ActionValue | undefined): void => {
 };
 
 function onClickHandler(
+    showChoicePopup: boolean,
     x: number,
     y: number,
     bodyText: string,
@@ -22,7 +23,14 @@ function onClickHandler(
     onProceed: ActionValue | undefined,
     debugMode: boolean
 ): void {
-    MxConfirmation(bodyText, proceedCaption, cancelCaption, () => {
+    if(showChoicePopup){
+        MxConfirmation(bodyText, proceedCaption, cancelCaption, ProceedAndClickClickedHtmlItem());
+    }
+    else{
+        ProceedAndClickClickedHtmlItem();
+    }
+
+    function ProceedAndClickClickedHtmlItem() {
         callMxAction(onProceed);
         const elementsAtPoint = document.elementsFromPoint(x, y);
         if (elementsAtPoint.length > 1) {
@@ -35,12 +43,13 @@ function onClickHandler(
             // eslint-disable-next-line no-unused-expressions
             debugMode && console.warn("No elements found under the points: {x: " + x + ", y: " + y + "}");
         }
-    });
+    }
 }
 
 export function UnsavedChangesMessage({
     block,
     name,
+    showChoicePopup,
     debugMode,
     style,
     onChangeBlock,
@@ -127,6 +136,7 @@ export function UnsavedChangesMessage({
                             <Blocker
                                 key={index}
                                 watchingElement={htmlElement}
+                                showChoicePopup={showChoicePopup}
                                 debugMode={debugMode}
                                 navbarWidth={
                                     htmlElement.classList.contains(navigationMenuClass)
@@ -135,6 +145,7 @@ export function UnsavedChangesMessage({
                                 }
                                 onClick={(x, y) =>
                                     onClickHandler(
+                                        showChoicePopup,
                                         x,
                                         y,
                                         bodyText.value as string,
