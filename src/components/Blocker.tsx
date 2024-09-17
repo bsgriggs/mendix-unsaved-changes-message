@@ -4,7 +4,6 @@ import { usePositionObserver } from "../utils/usePositionObserver";
 
 interface BlockerProps {
     watchingElement: Element;
-    showChoicePopup: boolean;
     debugMode: boolean;
     navbarWidth: number | undefined;
     onClick: (x: number, y: number) => void;

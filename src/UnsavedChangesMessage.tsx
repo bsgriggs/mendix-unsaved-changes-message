@@ -1,7 +1,7 @@
-import { ReactElement, createElement, useState, useEffect } from "react";
+import { ReactElement, createElement, useState, useEffect, useMemo } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { UnsavedChangesMessageContainerProps } from "../typings/UnsavedChangesMessageProps";
-import { ValueStatus, ActionValue } from "mendix";
+import { ActionValue } from "mendix";
 import Blocker from "./components/Blocker";
 import MxConfirmation from "./utils/MxConfirmation";
 import "./ui/UnsavedChangesMessage.css";
@@ -13,6 +13,26 @@ const callMxAction = (action: ActionValue | undefined): void => {
     }
 };
 
+function ProceedAndClickClickedHtmlItem(
+    x: number,
+    y: number,
+    onProceed: ActionValue | undefined,
+    debugMode: boolean
+): void {
+    callMxAction(onProceed);
+    const elementsAtPoint = document.elementsFromPoint(x, y);
+    if (elementsAtPoint.length > 1) {
+        // should be at least 2 elements, the temp element from this widget and the original element
+        const htmlElement = elementsAtPoint[1] as HTMLElement;
+        // eslint-disable-next-line no-unused-expressions
+        debugMode && console.info("clicking element: ", htmlElement);
+        htmlElement.click();
+    } else {
+        // eslint-disable-next-line no-unused-expressions
+        debugMode && console.warn("No elements found under the points: {x: " + x + ", y: " + y + "}");
+    }
+}
+
 function onClickHandler(
     showChoicePopup: boolean,
     x: number,
@@ -23,26 +43,12 @@ function onClickHandler(
     onProceed: ActionValue | undefined,
     debugMode: boolean
 ): void {
-    if(showChoicePopup){
-        MxConfirmation(bodyText, proceedCaption, cancelCaption, ProceedAndClickClickedHtmlItem());
-    }
-    else{
-        ProceedAndClickClickedHtmlItem();
-    }
-
-    function ProceedAndClickClickedHtmlItem() {
-        callMxAction(onProceed);
-        const elementsAtPoint = document.elementsFromPoint(x, y);
-        if (elementsAtPoint.length > 1) {
-            // should be at least 2 elements, the temp element from this widget and the original element
-            const htmlElement = elementsAtPoint[1] as HTMLElement;
-            // eslint-disable-next-line no-unused-expressions
-            debugMode && console.info("clicking element: ", htmlElement);
-            htmlElement.click();
-        } else {
-            // eslint-disable-next-line no-unused-expressions
-            debugMode && console.warn("No elements found under the points: {x: " + x + ", y: " + y + "}");
-        }
+    if (showChoicePopup) {
+        MxConfirmation(bodyText, proceedCaption, cancelCaption, () =>
+            ProceedAndClickClickedHtmlItem(x, y, onProceed, debugMode)
+        );
+    } else {
+        ProceedAndClickClickedHtmlItem(x, y, onProceed, debugMode);
     }
 }
 
@@ -62,9 +68,14 @@ export function UnsavedChangesMessage({
     sidebarClass,
     navigationMenuClass
 }: UnsavedChangesMessageContainerProps): ReactElement {
-    const [blocking, setBlocking] = useState<boolean>(false);
     const [watchingElements, setWatchingElements] = useState<HTMLElement[]>([]);
     const [navbar, setNavbar] = useState<Element | null>(null);
+    const blocking = useMemo(() => {
+        callMxAction(onChangeBlock);
+        return block.value as boolean;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [block.value]);
+    const showPopup = useMemo(() => showChoicePopup.value as boolean, [showChoicePopup.value]);
 
     // get navbar
     if (observeMode !== "browser") {
@@ -79,15 +90,6 @@ export function UnsavedChangesMessage({
     }
 
     const navbarPosition = usePositionObserver(navbar, blocking);
-
-    // maintain blocking status
-    useEffect(() => {
-        if (block.status === ValueStatus.Available && block.value !== blocking) {
-            setBlocking(block.value as boolean);
-            callMxAction(onChangeBlock);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [block.value]);
 
     if (observeMode !== "browser") {
         // retrieve and store elements by class name
@@ -126,7 +128,11 @@ export function UnsavedChangesMessage({
         <div id={name} style={style} className={"unsaved-changes-message"}>
             {debugMode && (
                 <p className={`alert alert-${blocking ? "danger" : "info"}`}>
-                    {"DEBUG MODE: Unsaved Changes Message is " + (blocking ? "blocking" : "not blocking")}
+                    {"DEBUG MODE: Unsaved Changes Message is " +
+                        (blocking ? "blocking" : "not blocking") +
+                        " and " +
+                        (showPopup ? "will" : "will not") +
+                        " show the popup"}
                 </p>
             )}
             {observeMode !== "browser" && (
@@ -136,7 +142,6 @@ export function UnsavedChangesMessage({
                             <Blocker
                                 key={index}
                                 watchingElement={htmlElement}
-                                showChoicePopup={showChoicePopup}
                                 debugMode={debugMode}
                                 navbarWidth={
                                     htmlElement.classList.contains(navigationMenuClass)
@@ -145,7 +150,7 @@ export function UnsavedChangesMessage({
                                 }
                                 onClick={(x, y) =>
                                     onClickHandler(
-                                        showChoicePopup,
+                                        showPopup,
                                         x,
                                         y,
                                         bodyText.value as string,

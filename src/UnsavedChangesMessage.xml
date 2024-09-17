@@ -25,10 +25,12 @@
                     <description>Boolean expression that determines whether or not to show the message.</description>
                     <returnType type="Boolean" />
                 </property>
-                <property key="showChoicePopup" type="boolean" defaultValue="true">
+                <property key="showChoicePopup" type="expression" defaultValue="true"
+                    required="true">
                     <caption>Show choice popup?</caption>
                     <description>If true, popup will get shown: Proceed or Cancel?
 If false, no popup will be shown. Action OnProcess will immediately get executed.</description>
+                    <returnType type="Boolean" />
                 </property>
                 <property key="debugMode" type="boolean" defaultValue="true">
                     <caption>Debug Mode?</caption>
@@ -53,7 +55,7 @@ If false, no popup will be shown. Action OnProcess will immediately get executed
             <propertyGroup caption="Actions">
                 <property key="onProceed" type="action" required="true">
                     <caption>On Proceed</caption>
-                    <description>Mx Action fired when the user clicks on the Proceed button.</description>
+                    <description>MxAction fired when the user clicks on the Proceed button.</description>
                 </property>
                 <property key="onChangeBlock" type="action" required="false">
                     <caption>On Change Block</caption>
