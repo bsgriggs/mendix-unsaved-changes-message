@@ -15,6 +15,7 @@ export interface UnsavedChangesMessageContainerProps {
     tabIndex?: number;
     observeMode: ObserveModeEnum;
     block: DynamicValue<boolean>;
+    showChoicePopup: boolean;
     debugMode: boolean;
     watchingClass: string;
     sidebarClass: string;
@@ -37,6 +38,7 @@ export interface UnsavedChangesMessagePreviewProps {
     readOnly: boolean;
     observeMode: ObserveModeEnum;
     block: string;
+    showChoicePopup: boolean;
     debugMode: boolean;
     watchingClass: string;
     sidebarClass: string;
