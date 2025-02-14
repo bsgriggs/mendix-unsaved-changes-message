@@ -10,7 +10,7 @@
     <helpUrl>https://github.com/bsgriggs/mendix-onBeforeUnload/blob/master/README.md</helpUrl>
     <properties>
         <propertyGroup caption="General">
-            <propertyGroup caption="General">
+            <propertyGroup caption="Behavior">
                 <property key="observeMode" type="enumeration" defaultValue="both">
                     <caption>Observe</caption>
                     <description>What types of navigation should the widget prevent?</description>
@@ -28,62 +28,81 @@
                 <property key="showChoicePopup" type="expression" defaultValue="true"
                     required="true">
                     <caption>Show choice popup?</caption>
-                    <description>If true, popup will get shown: Proceed or Cancel?
+                    <description>If true, popup will get shown: Proceed or Cancel? 
 If false, no popup will be shown. Action OnProcess will immediately get executed.</description>
                     <returnType type="Boolean" />
                 </property>
+            </propertyGroup>
+            <propertyGroup caption="Debug Mode">
                 <property key="debugMode" type="boolean" defaultValue="true">
                     <caption>Debug Mode?</caption>
                     <description>DISABLE PRIOR TO PRODUCTION DEPLOYMENT</description>
                 </property>
-                <property key="watchingClass" type="string" required="true"
-                    defaultValue="unsaved-changes-block">
-                    <caption>Watching Class</caption>
-                    <description>The CSS class used to find the actions you want to prevent.</description>
-                </property>
-                <property key="sidebarClass" type="string" required="false"
-                    defaultValue="region-sidebar">
-                    <caption>Sidebar Class</caption>
-                    <description>The CSS class used to find the navbar and watch its width changes.</description>
-                </property>
-                <property key="navigationMenuClass" type="string" required="false"
-                    defaultValue="mx-navigationtree">
-                    <caption>Navigation Menu Class</caption>
-                    <description>The CSS class used determine if the element being watch is the navigation tree</description>
-                </property>
             </propertyGroup>
-            <propertyGroup caption="Actions">
-                <property key="onProceed" type="action" required="true">
-                    <caption>On Proceed</caption>
-                    <description>MxAction fired when the user clicks on the Proceed button.</description>
-                </property>
-                <property key="onChangeBlock" type="action" required="false">
-                    <caption>On Change Block</caption>
-                    <description>MxAction fired when the result of the Block Exit expression changes.</description>
-                </property>
-            </propertyGroup>
+        </propertyGroup>
+        <propertyGroup caption="Mendix Observe Mode Settings">
+            <property key="mendixObserveType" type="enumeration" defaultValue="CLASS_NAMES">
+                <caption>In-App Block Type</caption>
+                <description>How should in-app navigation be blocked?
+Class Names - easier to setup, but do NOT get triggered with keyboard controls.
+JavaScript Action - more effort, but does get triggered with keyboard controls. NOTE: All potential navigations away from the page MUST call the JavaScript Action</description>
+                <enumerationValues>
+                    <enumerationValue key="CLASS_NAMES">Class Names</enumerationValue>
+                    <enumerationValue key="JAVASCRIPT_ACTION">JavaScript Action</enumerationValue>
+                    <enumerationValue key="BOTH">Both</enumerationValue>
+                </enumerationValues>
+            </property>
+            <property key="watchingClassList" type="expression" required="true"
+                defaultValue="'.unsaved-changes-block,.modal-header button'">
+                <caption>Watching Class List</caption>
+                <description>Comma separated list of JavaScript Selectors used to find actions to prevent.</description>
+                <returnType type="String" />
+            </property>
+            <property key="navMenuClassList" type="expression" required="false"
+                defaultValue="'.mx-navigationtree,.mx-navbar'">
+                <caption>Nav Menu Class List</caption>
+                <description>Comma separated list of nav menu JavaScript Selectors to block.
+The widget will look for 'li a' elements inside these Selectors and block them.
+NOTE: if the widget is in a popup, set this to empty
+                    </description>
+                <returnType type="String" />
+            </property>
         </propertyGroup>
         <propertyGroup caption="Text">
             <property key="bodyText" type="textTemplate" required="true">
                 <caption>Body Text</caption>
-                <description>The main text content. All text in this tab ONLY affects Mendix navigations.</description>
+                <description>The main text content. ONLY affects Mendix navigations.</description>
                 <translations>
                     <translation lang="en_US">You have unsaved changes, are you sure you want to leave?</translation>
                 </translations>
             </property>
             <property key="proceedCaption" type="textTemplate" required="true">
                 <caption>Proceed Caption</caption>
-                <description>The text for the confirm button. All text in this tab ONLY affects Mendix navigations.</description>
+                <description>The text for the confirm button. ONLY affects Mendix navigations.</description>
                 <translations>
                     <translation lang="en_US">Leave</translation>
                 </translations>
             </property>
             <property key="cancelCaption" type="textTemplate" required="true">
                 <caption>Cancel Caption</caption>
-                <description>The text for the cancel button. All text in this tab ONLY affects Mendix navigations.</description>
+                <description>The text for the cancel button. ONLY affects Mendix navigations.</description>
                 <translations>
                     <translation lang="en_US">Cancel</translation>
                 </translations>
+            </property>
+        </propertyGroup>
+        <propertyGroup caption="Actions">
+            <property key="onProceed" type="action" required="true">
+                <caption>On Proceed</caption>
+                <description>MxAction fired when the user clicks on the Proceed button.</description>
+            </property>
+            <property key="onCancel" type="action" required="true">
+                <caption>On Cancel</caption>
+                <description>MxAction fired when the user clicks on the Cancel button.</description>
+            </property>
+            <property key="onChangeBlock" type="action" required="false">
+                <caption>On Change Block</caption>
+                <description>MxAction fired when the result of the Block Exit expression changes.</description>
             </property>
         </propertyGroup>
         <propertyGroup caption="Common">

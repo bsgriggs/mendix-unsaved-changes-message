@@ -4,8 +4,8 @@
 .unsaved-changes-message .element-list {
 
 } */
-.unsaved-changes-message .element-list .blocker{
+.unsaved-changes-message-element-list .blocker {
     position: fixed;
-    /* z-index: 999999; */
+    /* z-index: 54321; */
     cursor: pointer;
 }

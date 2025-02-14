@@ -1,36 +1,68 @@
-import { ReactElement, createElement, MouseEvent } from "react";
+import { ReactElement, createElement, useMemo } from "react";
 
 import { usePositionObserver } from "../utils/usePositionObserver";
+
+import { ScanParents } from "../utils/ScanParents";
 
 interface BlockerProps {
     watchingElement: Element;
     debugMode: boolean;
-    navbarWidth: number | undefined;
-    onClick: (x: number, y: number) => void;
+    watchingClassList: string;
+    onClick: () => void;
 }
 
-export default function Blocker({ watchingElement, debugMode, onClick, navbarWidth }: BlockerProps): ReactElement {
-    const position = usePositionObserver(watchingElement, true);
+export default function Blocker(props: BlockerProps): ReactElement {
+    const position = usePositionObserver(props.watchingElement, true);
+
+    const zIndex = useMemo(() => {
+        //Recursively get the z-index so the blocker can be z-index+1
+        function CheckZIndex(element: Element): string {
+            if (window.getComputedStyle(element).zIndex !== "auto") {
+                return (Number(window.getComputedStyle(element).zIndex) + 1).toString();
+            } else if (element.parentElement === null || element.matches(".mx-scrollcontainer")) {
+                return "1";
+            } else {
+                return CheckZIndex(element.parentElement);
+            }
+        }
+
+        return CheckZIndex(props.watchingElement);
+    }, [props.watchingElement]);
+
+    const shouldBlockerRender: boolean = useMemo(() => {
+        let watchingClassnames = "";
+        props.watchingClassList
+            ?.trim()
+            .split(",")
+            .forEach(className => {
+                // make sure the classname starts with a period
+                watchingClassnames += `${className.startsWith(".") ? className : `.${className}`},`;
+            });
+
+        return ScanParents(
+            props.watchingElement,
+            `${watchingClassnames}.mx-scrollcontainer-open,.mx-scrollcontainer-nested`
+        );
+    }, [props.watchingClassList, props.watchingElement, position]);
+
     return (
         <div
-            onClick={(event: MouseEvent) => {
-                // eslint-disable-next-line no-unused-expressions
-                debugMode && console.info("blocker on click", { x: event.clientX, y: event.clientY });
-                onClick(event.clientX, event.clientY);
-            }}
+            onClick={props.onClick}
             title={
-                debugMode
+                props.debugMode
                     ? "This element's action is being superseded by the Unsaved Changes Message widget"
                     : undefined
             }
             className="blocker"
             style={{
+                display: shouldBlockerRender ? "block" : "none",
+                zIndex: zIndex,
                 left: position?.x || 0,
                 top: position?.y || 0,
-                width: navbarWidth ? navbarWidth : position?.width || 0,
+                width: position?.width || 0,
                 height: position?.height || 0,
-                backgroundColor: debugMode ? "red" : "white",
-                opacity: debugMode ? 0.6 : 0
+                backgroundColor: props.debugMode ? "red" : "white",
+                opacity: props.debugMode ? 0.4 : 0
             }}
         ></div>
     );

@@ -1,12 +1,14 @@
 /**
  * This file was generated from UnsavedChangesMessage.xml
  * WARNING: All changes made to this file will be overwritten
- * @author Mendix UI Content Team
+ * @author Mendix Widgets Framework Team
  */
 import { CSSProperties } from "react";
 import { ActionValue, DynamicValue } from "mendix";
 
 export type ObserveModeEnum = "mendix" | "browser" | "both";
+
+export type MendixObserveTypeEnum = "CLASS_NAMES" | "JAVASCRIPT_ACTION" | "BOTH";
 
 export interface UnsavedChangesMessageContainerProps {
     name: string;
@@ -17,14 +19,15 @@ export interface UnsavedChangesMessageContainerProps {
     block: DynamicValue<boolean>;
     showChoicePopup: DynamicValue<boolean>;
     debugMode: boolean;
-    watchingClass: string;
-    sidebarClass: string;
-    navigationMenuClass: string;
-    onProceed?: ActionValue;
-    onChangeBlock?: ActionValue;
+    mendixObserveType: MendixObserveTypeEnum;
+    watchingClassList: DynamicValue<string>;
+    navMenuClassList?: DynamicValue<string>;
     bodyText: DynamicValue<string>;
     proceedCaption: DynamicValue<string>;
     cancelCaption: DynamicValue<string>;
+    onProceed?: ActionValue;
+    onCancel?: ActionValue;
+    onChangeBlock?: ActionValue;
 }
 
 export interface UnsavedChangesMessagePreviewProps {
@@ -40,12 +43,13 @@ export interface UnsavedChangesMessagePreviewProps {
     block: string;
     showChoicePopup: string;
     debugMode: boolean;
-    watchingClass: string;
-    sidebarClass: string;
-    navigationMenuClass: string;
-    onProceed: {} | null;
-    onChangeBlock: {} | null;
+    mendixObserveType: MendixObserveTypeEnum;
+    watchingClassList: string;
+    navMenuClassList: string;
     bodyText: string;
     proceedCaption: string;
     cancelCaption: string;
+    onProceed: {} | null;
+    onCancel: {} | null;
+    onChangeBlock: {} | null;
 }

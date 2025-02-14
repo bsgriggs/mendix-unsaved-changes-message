@@ -1,169 +1,166 @@
-import { ReactElement, createElement, useState, useEffect, useMemo } from "react";
+import { ReactElement, createElement, useState, useEffect, useMemo, useCallback } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { UnsavedChangesMessageContainerProps } from "../typings/UnsavedChangesMessageProps";
 import { ActionValue } from "mendix";
 import Blocker from "./components/Blocker";
 import MxConfirmation from "./utils/MxConfirmation";
 import "./ui/UnsavedChangesMessage.css";
-import { usePositionObserver } from "./utils/usePositionObserver";
+import { DebugLog, Log, LOG_NODE } from "./utils/Logger";
+import { createPortal } from "react-dom";
 
-const callMxAction = (action: ActionValue | undefined): void => {
-    if (action !== undefined && action.canExecute) {
-        action.execute();
-    }
-};
-
-function ProceedAndClickClickedHtmlItem(
-    x: number,
-    y: number,
-    onProceed: ActionValue | undefined,
-    debugMode: boolean
-): void {
-    callMxAction(onProceed);
-    const elementsAtPoint = document.elementsFromPoint(x, y);
-    if (elementsAtPoint.length > 1) {
-        // should be at least 2 elements, the temp element from this widget and the original element
-        const htmlElement = elementsAtPoint[1] as HTMLElement;
-        // eslint-disable-next-line no-unused-expressions
-        debugMode && console.info("clicking element: ", htmlElement);
-        htmlElement.click();
-    } else {
-        // eslint-disable-next-line no-unused-expressions
-        debugMode && console.warn("No elements found under the points: {x: " + x + ", y: " + y + "}");
-    }
-}
-
-function onClickHandler(
-    showChoicePopup: boolean,
-    x: number,
-    y: number,
-    bodyText: string,
-    proceedCaption: string,
-    cancelCaption,
-    onProceed: ActionValue | undefined,
-    debugMode: boolean
-): void {
-    if (showChoicePopup) {
-        MxConfirmation(bodyText, proceedCaption, cancelCaption, () =>
-            ProceedAndClickClickedHtmlItem(x, y, onProceed, debugMode)
-        );
-    } else {
-        ProceedAndClickClickedHtmlItem(x, y, onProceed, debugMode);
-    }
-}
-
-export function UnsavedChangesMessage({
-    block,
-    name,
-    showChoicePopup,
-    debugMode,
-    style,
-    onChangeBlock,
-    watchingClass,
-    bodyText,
-    cancelCaption,
-    proceedCaption,
-    onProceed,
-    observeMode,
-    sidebarClass,
-    navigationMenuClass
-}: UnsavedChangesMessageContainerProps): ReactElement {
-    const [watchingElements, setWatchingElements] = useState<HTMLElement[]>([]);
-    const [navbar, setNavbar] = useState<Element | null>(null);
+export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps): ReactElement {
+    const [watchingElements, setWatchingElements] = useState<Element[]>([]);
+    const callMxAction = useCallback((action: ActionValue | undefined): void => {
+        if (action !== undefined && action.canExecute && !action.isExecuting) {
+            action.execute();
+        }
+    }, []);
     const blocking = useMemo(() => {
-        callMxAction(onChangeBlock);
-        return block.value as boolean;
+        callMxAction(props.onChangeBlock);
+        return props.block.value === true;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [block.value]);
-    const showPopup = useMemo(() => showChoicePopup.value as boolean, [showChoicePopup.value]);
+    }, [props.block.value]); // cannot have props.onchange block param or it will cause an infinite loop when the action gets set to running
 
-    // get navbar
-    if (observeMode !== "browser") {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useEffect(() => {
-            const navbarList = document.getElementsByClassName(sidebarClass);
-            if (navbarList.length > 0) {
-                setNavbar(navbarList[0]);
-            }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, []);
-    }
+    const OnProceedHandler = useCallback(
+        (element?: HTMLElement): void => {
+            callMxAction(props.onProceed);
+            element?.click();
+            DebugLog(props.debugMode, "Ran on proceed and clicked element ", element);
+        },
+        [props.debugMode, props.onProceed, callMxAction]
+    );
 
-    const navbarPosition = usePositionObserver(navbar, blocking);
-
-    if (observeMode !== "browser") {
-        // retrieve and store elements by class name
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useEffect(() => {
-            const elements = document.getElementsByClassName(watchingClass);
-            if (elements.length > 0) {
-                const elementsArray = Array.from(elements);
-                // eslint-disable-next-line no-unused-expressions
-                debugMode && console.info("found elements", elementsArray);
-                const newWatchingElements: HTMLElement[] = [];
-                elementsArray.forEach(element => {
-                    const htmlElement = element as HTMLElement;
-                    newWatchingElements.push(htmlElement);
-                });
-                setWatchingElements(newWatchingElements);
+    const onClickHandler = useCallback(
+        (element?: HTMLElement): Promise<boolean> => {
+            if (props.showChoicePopup.value === true) {
+                return MxConfirmation(
+                    props.bodyText.value as string,
+                    props.proceedCaption.value as string,
+                    props.cancelCaption.value as string,
+                    () => {
+                        OnProceedHandler(element);
+                    },
+                    () => {
+                        callMxAction(props.onCancel);
+                    }
+                );
             } else {
-                setWatchingElements([]);
-                // eslint-disable-next-line no-unused-expressions
-                debugMode && console.warn("No elements found with classname: " + watchingClass);
+                OnProceedHandler(element);
+                return new Promise(resolve => resolve(true));
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [blocking]);
-    }
+        },
+        [
+            OnProceedHandler,
+            props.showChoicePopup,
+            props.bodyText,
+            props.proceedCaption,
+            props.cancelCaption,
+            props.onCancel,
+            callMxAction
+        ]
+    );
 
-    if (observeMode !== "mendix") {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useBeforeunload(event => {
-            if (blocking) {
-                event.preventDefault();
+    // Browser blocker
+    useBeforeunload(
+        blocking && (props.observeMode === "both" || props.observeMode === "browser")
+            ? event => {
+                  event.preventDefault();
+                  return props.bodyText.value;
+              }
+            : undefined
+    );
+
+    useEffect(() => {
+        if (props.mendixObserveType === "BOTH" || props.mendixObserveType === "JAVASCRIPT_ACTION") {
+            // Mount a function that the JavaScript action can all to trigger the popup
+            window["unsaved-changes-message"] = (): Promise<boolean> => {
+                DebugLog(props.debugMode, `Browser callback with blocking: ${blocking}`);
+                if (blocking) {
+                    return onClickHandler();
+                } else {
+                    return new Promise(resolve => resolve(true));
+                }
+            };
+
+            return () => {
+                // On unmount, remove the special function
+                window["unsaved-changes-message"] = undefined;
+            };
+        }
+    }, [onClickHandler, blocking, props.debugMode, props.mendixObserveType]);
+
+    useEffect((): void => {
+        if (
+            (props.observeMode === "both" || props.observeMode === "mendix") &&
+            (props.mendixObserveType === "BOTH" || props.mendixObserveType === "CLASS_NAMES")
+        ) {
+            const newWatchingElements: Element[] = [];
+
+            props.watchingClassList.value
+                ?.trim()
+                .split(",")
+                .forEach(className => {
+                    // make sure the classname starts with a period and get the DOM elements
+                    document
+                        .querySelectorAll(className.startsWith(".") ? className : `.${className}`)
+                        .forEach(element => newWatchingElements.push(element));
+                });
+            if (newWatchingElements.length === 0) {
+                Log(LOG_NODE.WARN, `No watching elements found with classname '${props.watchingClassList}'`);
             }
-        });
-    }
+
+            props.navMenuClassList?.value
+                ?.trim()
+                .split(",")
+                .forEach(className => {
+                    const iClassName = className.startsWith(".") ? className : `.${className}`;
+                    const navbar = document.querySelector(iClassName);
+                    if (navbar !== null) {
+                        const newNavBarElements: Element[] = [];
+                        navbar.querySelectorAll("li:not(.dropdown) a:not(.dropbox)").forEach(anchor => {
+                            newNavBarElements.push(anchor);
+                        });
+                        if (newNavBarElements.length === 0) {
+                            Log(LOG_NODE.WARN, `No nav bar elements found with classname '${iClassName} li a'`);
+                        }
+                        newWatchingElements.push(...newNavBarElements);
+                    }
+                });
+
+            DebugLog(props.debugMode, `Found elements to block: `, newWatchingElements);
+            setWatchingElements(newWatchingElements);
+        }
+    }, [props.watchingClassList, props.navMenuClassList, props.observeMode, props.debugMode]);
 
     return (
-        <div id={name} style={style} className={"unsaved-changes-message"}>
-            {debugMode && (
+        <div id={props.name} style={props.style} className={"unsaved-changes-message"}>
+            {props.debugMode && (
                 <p className={`alert alert-${blocking ? "danger" : "info"}`}>
                     {"DEBUG MODE: Unsaved Changes Message is " +
                         (blocking ? "blocking" : "not blocking") +
                         " and " +
-                        (showPopup ? "will" : "will not") +
+                        (props.showChoicePopup.value === true ? "will" : "will not") +
                         " show the popup"}
                 </p>
             )}
-            {observeMode !== "browser" && (
-                <div className="element-list">
-                    {blocking &&
-                        watchingElements.map((htmlElement, index) => (
-                            <Blocker
-                                key={index}
-                                watchingElement={htmlElement}
-                                debugMode={debugMode}
-                                navbarWidth={
-                                    htmlElement.classList.contains(navigationMenuClass)
-                                        ? navbarPosition?.width
-                                        : undefined
-                                }
-                                onClick={(x, y) =>
-                                    onClickHandler(
-                                        showPopup,
-                                        x,
-                                        y,
-                                        bodyText.value as string,
-                                        proceedCaption.value as string,
-                                        cancelCaption.value as string,
-                                        onProceed,
-                                        debugMode
-                                    )
-                                }
-                            />
-                        ))}
-                </div>
-            )}
+            {(props.observeMode === "both" || props.observeMode === "mendix") &&
+                (props.mendixObserveType === "BOTH" || props.mendixObserveType === "CLASS_NAMES") &&
+                createPortal(
+                    <div className="unsaved-changes-message-element-list">
+                        {blocking &&
+                            watchingElements.map((htmlElement, index) => (
+                                <Blocker
+                                    key={index}
+                                    watchingElement={htmlElement}
+                                    debugMode={props.debugMode}
+                                    onClick={() => onClickHandler(htmlElement as HTMLElement)}
+                                    watchingClassList={props.watchingClassList.value as string}
+                                />
+                            ))}
+                    </div>,
+                    // mount the blockers either inside the popup or inside the mx-page
+                    document.querySelector(".modal-content") || document.querySelector(".mx-page") || document.body
+                )}
         </div>
     );
 }

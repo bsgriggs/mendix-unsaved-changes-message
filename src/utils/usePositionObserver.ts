@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-export function usePositionObserver(target: Element | null, active: boolean): ClientRect | undefined {
-    const [position, setPosition] = useState<ClientRect>();
+export function usePositionObserver(target: Element | null, active: boolean): DOMRect | undefined {
+    const [position, setPosition] = useState<DOMRect>();
 
     const onAnimationFrameHandler = useCallback(() => {
-        const newPosition: ClientRect | undefined = target?.getBoundingClientRect();
+        const newPosition: DOMRect | undefined = target?.getBoundingClientRect();
 
         if (shouldUpdatePosition(newPosition, position)) {
             setPosition(newPosition);
@@ -36,7 +36,7 @@ function useAnimationFrameEffect(callback?: () => void): void {
     }, [callback, onAnimationFrame]);
 }
 
-function shouldUpdatePosition(a?: ClientRect, b?: ClientRect): boolean {
+function shouldUpdatePosition(a?: DOMRect, b?: DOMRect): boolean {
     return (
         !a ||
         !b ||
