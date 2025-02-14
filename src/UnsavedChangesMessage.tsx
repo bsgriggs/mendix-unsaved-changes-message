@@ -6,7 +6,6 @@ import Blocker from "./components/Blocker";
 import MxConfirmation from "./utils/MxConfirmation";
 import "./ui/UnsavedChangesMessage.css";
 import { DebugLog, Log, LOG_NODE } from "./utils/Logger";
-import { createPortal } from "react-dom";
 
 export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps): ReactElement {
     const [watchingElements, setWatchingElements] = useState<Element[]>([]);
@@ -96,41 +95,35 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
         ) {
             const newWatchingElements: Element[] = [];
 
-            props.watchingClassList.value
+            props.watchingSelectors.value
                 ?.trim()
                 .split(",")
                 .forEach(className => {
-                    // make sure the classname starts with a period and get the DOM elements
-                    document
-                        .querySelectorAll(className.startsWith(".") ? className : `.${className}`)
-                        .forEach(element => newWatchingElements.push(element));
+                    document.querySelectorAll(className).forEach(element => newWatchingElements.push(element));
                 });
             if (newWatchingElements.length === 0) {
-                Log(LOG_NODE.WARN, `No watching elements found with classname '${props.watchingClassList}'`);
+                Log(LOG_NODE.WARN, `No watching elements found with classname '${props.watchingSelectors}'`);
             }
 
-            props.navMenuClassList?.value
+            props.navMenuSelectors?.value
                 ?.trim()
                 .split(",")
                 .forEach(className => {
-                    const iClassName = className.startsWith(".") ? className : `.${className}`;
-                    const navbar = document.querySelector(iClassName);
-                    if (navbar !== null) {
-                        const newNavBarElements: Element[] = [];
-                        navbar.querySelectorAll("li:not(.dropdown) a:not(.dropbox)").forEach(anchor => {
-                            newNavBarElements.push(anchor);
-                        });
-                        if (newNavBarElements.length === 0) {
-                            Log(LOG_NODE.WARN, `No nav bar elements found with classname '${iClassName} li a'`);
-                        }
-                        newWatchingElements.push(...newNavBarElements);
-                    }
+                    document.querySelectorAll(className).forEach(element => newWatchingElements.push(element));
                 });
 
             DebugLog(props.debugMode, `Found elements to block: `, newWatchingElements);
             setWatchingElements(newWatchingElements);
         }
-    }, [props.watchingClassList, props.navMenuClassList, props.observeMode, props.debugMode]);
+    }, [props.watchingSelectors, props.navMenuSelectors, props.observeMode, props.debugMode, props.mendixObserveType]);
+
+    console.info("render ", {
+        watchingElements,
+        blocking,
+        showPortal:
+            (props.observeMode === "both" || props.observeMode === "mendix") &&
+            (props.mendixObserveType === "BOTH" || props.mendixObserveType === "CLASS_NAMES")
+    });
 
     return (
         <div id={props.name} style={props.style} className={"unsaved-changes-message"}>
@@ -144,8 +137,7 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
                 </p>
             )}
             {(props.observeMode === "both" || props.observeMode === "mendix") &&
-                (props.mendixObserveType === "BOTH" || props.mendixObserveType === "CLASS_NAMES") &&
-                createPortal(
+                (props.mendixObserveType === "BOTH" || props.mendixObserveType === "CLASS_NAMES") && (
                     <div className="unsaved-changes-message-element-list">
                         {blocking &&
                             watchingElements.map((htmlElement, index) => (
@@ -154,12 +146,10 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
                                     watchingElement={htmlElement}
                                     debugMode={props.debugMode}
                                     onClick={() => onClickHandler(htmlElement as HTMLElement)}
-                                    watchingClassList={props.watchingClassList.value as string}
+                                    watchingClassList={props.watchingSelectors.value as string}
                                 />
                             ))}
-                    </div>,
-                    // mount the blockers either inside the popup or inside the mx-page
-                    document.querySelector(".modal-content") || document.querySelector(".mx-page") || document.body
+                    </div>
                 )}
         </div>
     );

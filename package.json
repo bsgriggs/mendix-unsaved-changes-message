@@ -10,7 +10,7 @@
     },
     "license": "MIT",
     "config": {
-        "projectPath": "../../",
+        "projectPath": "Z:/Users/Benjamin.Griggs/Documents/Mendix/WidgetTesting-main",
         "mendixHost": "http://localhost:8082",
         "developmentPort": 3000
     },

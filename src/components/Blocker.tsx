@@ -1,7 +1,5 @@
 import { ReactElement, createElement, useMemo } from "react";
-
 import { usePositionObserver } from "../utils/usePositionObserver";
-
 import { ScanParents } from "../utils/ScanParents";
 
 interface BlockerProps {
@@ -15,12 +13,12 @@ export default function Blocker(props: BlockerProps): ReactElement {
     const position = usePositionObserver(props.watchingElement, true);
 
     const zIndex = useMemo(() => {
-        //Recursively get the z-index so the blocker can be z-index+1
+        // Recursively get the z-index so the blocker can be z-index+1
         function CheckZIndex(element: Element): string {
             if (window.getComputedStyle(element).zIndex !== "auto") {
                 return (Number(window.getComputedStyle(element).zIndex) + 1).toString();
             } else if (element.parentElement === null || element.matches(".mx-scrollcontainer")) {
-                return "1";
+                return "0";
             } else {
                 return CheckZIndex(element.parentElement);
             }
@@ -30,20 +28,12 @@ export default function Blocker(props: BlockerProps): ReactElement {
     }, [props.watchingElement]);
 
     const shouldBlockerRender: boolean = useMemo(() => {
-        let watchingClassnames = "";
-        props.watchingClassList
-            ?.trim()
-            .split(",")
-            .forEach(className => {
-                // make sure the classname starts with a period
-                watchingClassnames += `${className.startsWith(".") ? className : `.${className}`},`;
-            });
-
         return ScanParents(
             props.watchingElement,
-            `${watchingClassnames}.mx-scrollcontainer-open,.mx-scrollcontainer-nested`
+            `${props.watchingClassList},.mx-scrollcontainer-open,.mx-scrollcontainer-nested`
         );
-    }, [props.watchingClassList, props.watchingElement, position]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.watchingClassList, props.watchingElement, position]); // need to re-check when position changes
 
     return (
         <div
@@ -56,7 +46,7 @@ export default function Blocker(props: BlockerProps): ReactElement {
             className="blocker"
             style={{
                 display: shouldBlockerRender ? "block" : "none",
-                zIndex: zIndex,
+                zIndex,
                 left: position?.x || 0,
                 top: position?.y || 0,
                 width: position?.width || 0,

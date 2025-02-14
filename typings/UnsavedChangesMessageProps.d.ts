@@ -20,8 +20,8 @@ export interface UnsavedChangesMessageContainerProps {
     showChoicePopup: DynamicValue<boolean>;
     debugMode: boolean;
     mendixObserveType: MendixObserveTypeEnum;
-    watchingClassList: DynamicValue<string>;
-    navMenuClassList?: DynamicValue<string>;
+    watchingSelectors: DynamicValue<string>;
+    navMenuSelectors?: DynamicValue<string>;
     bodyText: DynamicValue<string>;
     proceedCaption: DynamicValue<string>;
     cancelCaption: DynamicValue<string>;
@@ -44,8 +44,8 @@ export interface UnsavedChangesMessagePreviewProps {
     showChoicePopup: string;
     debugMode: boolean;
     mendixObserveType: MendixObserveTypeEnum;
-    watchingClassList: string;
-    navMenuClassList: string;
+    watchingSelectors: string;
+    navMenuSelectors: string;
     bodyText: string;
     proceedCaption: string;
     cancelCaption: string;

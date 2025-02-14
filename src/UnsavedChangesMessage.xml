@@ -52,14 +52,14 @@ JavaScript Action - more effort, but does get triggered with keyboard controls. 
                     <enumerationValue key="BOTH">Both</enumerationValue>
                 </enumerationValues>
             </property>
-            <property key="watchingClassList" type="expression" required="true"
+            <property key="watchingSelectors" type="expression" required="true"
                 defaultValue="'.unsaved-changes-block,.modal-header button'">
                 <caption>Watching Class List</caption>
                 <description>Comma separated list of JavaScript Selectors used to find actions to prevent.</description>
                 <returnType type="String" />
             </property>
-            <property key="navMenuClassList" type="expression" required="false"
-                defaultValue="'.mx-navigationtree,.mx-navbar'">
+            <property key="navMenuSelectors" type="expression" required="false"
+                defaultValue="'.mx-navigationtree li a:not(.dropbox),.mx-navbar li:not(.dropdown) a'">
                 <caption>Nav Menu Class List</caption>
                 <description>Comma separated list of nav menu JavaScript Selectors to block.
 The widget will look for 'li a' elements inside these Selectors and block them.
