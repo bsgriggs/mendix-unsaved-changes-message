@@ -29,7 +29,7 @@
                     required="true">
                     <caption>Show choice popup?</caption>
                     <description>If true, popup will get shown: Proceed or Cancel? 
-If false, no popup will be shown. Action OnProcess will immediately get executed.</description>
+If false, no popup will be shown. Action OnProcess will immediately get executed. Useful for running an action when the user leave the page.</description>
                     <returnType type="Boolean" />
                 </property>
             </propertyGroup>
@@ -41,7 +41,7 @@ If false, no popup will be shown. Action OnProcess will immediately get executed
             </propertyGroup>
         </propertyGroup>
         <propertyGroup caption="Mendix Observe Mode Settings">
-            <property key="mendixObserveType" type="enumeration" defaultValue="CLASS_NAMES">
+            <property key="mendixObserveType" type="enumeration" defaultValue="JAVASCRIPT_ACTION">
                 <caption>In-App Block Type</caption>
                 <description>How should in-app navigation be blocked?
 Class Names - easier to setup, but do NOT get triggered with keyboard controls.

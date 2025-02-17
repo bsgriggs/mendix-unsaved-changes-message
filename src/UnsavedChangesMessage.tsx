@@ -117,14 +117,6 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
         }
     }, [props.watchingSelectors, props.navMenuSelectors, props.observeMode, props.debugMode, props.mendixObserveType]);
 
-    console.info("render ", {
-        watchingElements,
-        blocking,
-        showPortal:
-            (props.observeMode === "both" || props.observeMode === "mendix") &&
-            (props.mendixObserveType === "BOTH" || props.mendixObserveType === "CLASS_NAMES")
-    });
-
     return (
         <div id={props.name} style={props.style} className={"unsaved-changes-message"}>
             {props.debugMode && (
