@@ -45,7 +45,7 @@ If false, no popup will be shown. Action OnProcess will immediately get executed
                 <caption>In-App Block Type</caption>
                 <description>How should in-app navigation be blocked?
 Class Names - easier to setup, but do NOT get triggered with keyboard controls.
-JavaScript Action - more effort, but does get triggered with keyboard controls. NOTE: All potential navigations away from the page MUST call the JavaScript Action</description>
+JavaScript Action - more effort, but does get triggered with keyboard controls. NOTE: All navigations away from the page MUST call the JavaScript Action provided in the Module 'CheckUnsavedChangesMessage'.</description>
                 <enumerationValues>
                     <enumerationValue key="CLASS_NAMES">Class Names</enumerationValue>
                     <enumerationValue key="JAVASCRIPT_ACTION">JavaScript Action</enumerationValue>
@@ -62,7 +62,6 @@ JavaScript Action - more effort, but does get triggered with keyboard controls. 
                 defaultValue="'.mx-navigationtree li a:not(.dropbox),.mx-navbar li:not(.dropdown) a'">
                 <caption>Nav Menu Class List</caption>
                 <description>Comma separated list of nav menu JavaScript Selectors to block.
-The widget will look for 'li a' elements inside these Selectors and block them.
 NOTE: if the widget is in a popup, set this to empty
                     </description>
                 <returnType type="String" />
