@@ -52,8 +52,8 @@ The following sections are all the settings of the widget. For more info on how 
 6. Set/Copy the Watching Class Name 'unsaved-changes-block' to all containers & buttons that you want to block (i.e. cancel button, etc).  
 ![cancel](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/cancel.png)   
 7. The Nav Menu Class List's default value should automatically detect all the items in the nav menu. But if you want to use the widget in a popup, remove these classes.  
-8. Set the On Process action as either a Microflow or a Nanoflow that performs a rollback on your form object. If you're using a non-persistent form object, then you might need to delete the objects. 
-onProceed](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/onProceed.png)  
+8. Set the On Process action as either a Microflow or a Nanoflow that performs a rollback on your form object. If you're using a non-persistent form object, then you might need to delete the objects.  
+![onProceed](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/OnProceed.png)  
 9. All set! Run the project, make some changes to the form, and attempt to leave the page via one of the buttons you added the Watching Class Name on. 
 10. TURN OFF DEBUG MODE! _With debug mode on, you will see any content found using your configured Watching Class Name has a red box on top of it. It will also log useful information to the browser console._  
 
