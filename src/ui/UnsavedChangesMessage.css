@@ -2,3 +2,7 @@
     position: fixed;
     cursor: pointer;
 }
+
+/* .mx-scrollcontainer:not(.mx-scrollcontainer-open) .mx-scrollcontainer-wrapper {
+    width: unset !important;
+} */

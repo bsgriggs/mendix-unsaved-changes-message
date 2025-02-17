@@ -6,6 +6,7 @@ interface BlockerProps {
     watchingElement: Element;
     debugMode: boolean;
     watchingClassList: string;
+    navClassList: string | undefined;
     onClick: () => void;
 }
 
@@ -30,10 +31,12 @@ export default function Blocker(props: BlockerProps): ReactElement {
     const shouldBlockerRender: boolean = useMemo(() => {
         return ScanParents(
             props.watchingElement,
-            `${props.watchingClassList},.mx-scrollcontainer-open,.mx-scrollcontainer-nested`
+            `${props.watchingClassList}${
+                props.navClassList !== undefined ? `,${props.navClassList}` : ""
+            },.mx-scrollcontainer-open,.mx-scrollcontainer-nested`
         );
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.watchingClassList, props.watchingElement, position]); // need to re-check when position changes
+    }, [props.watchingClassList, props.navClassList, props.watchingElement, position]); // need to re-check when position changes
 
     return (
         <div

@@ -139,6 +139,7 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
                                     debugMode={props.debugMode}
                                     onClick={() => onClickHandler(htmlElement as HTMLElement)}
                                     watchingClassList={props.watchingSelectors.value as string}
+                                    navClassList={props.navMenuSelectors?.value as string}
                                 />
                             ))}
                     </div>
