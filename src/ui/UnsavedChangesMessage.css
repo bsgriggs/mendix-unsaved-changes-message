@@ -2,11 +2,3 @@
     position: fixed;
     cursor: pointer;
 }
-
-.mx-scrollcontainer-wrapper:not(:has(.mx-scrollcontainer-open)) .mx-scrollcontainer-wrapper {
-    width: auto !important;
-}
-
-.mx-scrollcontainer-wrapper:not(:has(.mx-scrollcontainer-open)) .mx-scrollcontainer-wrapper .mx-navigationtree a {
-    padding: 0 !important;
-}

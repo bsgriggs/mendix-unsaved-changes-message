@@ -6,6 +6,7 @@ import Blocker from "./components/Blocker";
 import MxConfirmation from "./utils/MxConfirmation";
 import "./ui/UnsavedChangesMessage.css";
 import { DebugLog, Log, LOG_NODE } from "./utils/Logger";
+import { ToggleNavBarStyle } from "./utils/NavBarStyle";
 
 export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps): ReactElement {
     const [watchingElements, setWatchingElements] = useState<Element[]>([]);
@@ -88,11 +89,12 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
         }
     }, [onClickHandler, blocking, props.debugMode, props.mendixObserveType]);
 
-    useEffect((): void => {
+    useEffect(() => {
         if (
             (props.observeMode === "both" || props.observeMode === "mendix") &&
             (props.mendixObserveType === "BOTH" || props.mendixObserveType === "CLASS_NAMES")
         ) {
+            ToggleNavBarStyle(true);
             const newWatchingElements: Element[] = [];
 
             props.watchingSelectors.value
@@ -115,6 +117,9 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
             DebugLog(props.debugMode, `Found elements to block: `, newWatchingElements);
             setWatchingElements(newWatchingElements);
         }
+        return () => {
+            ToggleNavBarStyle(false);
+        };
     }, [props.watchingSelectors, props.navMenuSelectors, props.observeMode, props.debugMode, props.mendixObserveType]);
 
     return (
