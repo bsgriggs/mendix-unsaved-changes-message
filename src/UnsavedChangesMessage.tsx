@@ -160,7 +160,7 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
 
     return (
         <div id={props.name} style={props.style} className={"unsaved-changes-message"}>
-            {props.debugMode && (
+            {props.debugMode.value === true && (
                 <p className={`alert alert-${blocking ? "danger" : "info"}`}>
                     {"DEBUG MODE: Unsaved Changes Message is " +
                         (blocking ? "blocking" : "not blocking") +
