@@ -1,4 +1,4 @@
-import { ReactElement, createElement, useState, useEffect, useMemo, useCallback } from "react";
+import { ReactElement, createElement, useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useBeforeunload } from "react-beforeunload";
 import { UnsavedChangesMessageContainerProps } from "../typings/UnsavedChangesMessageProps";
 import { ActionValue } from "mendix";
@@ -20,32 +20,64 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
         return props.block.value === true;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.block.value]); // cannot have props.onchange block param or it will cause an infinite loop when the action gets set to running
+    const currentElement = useRef<HTMLElement>();
+    const activeInterval = useRef<number>();
 
-    const OnProceedHandler = useCallback(
-        (element?: HTMLElement): void => {
-            callMxAction(props.onProceed);
-            element?.click();
-            DebugLog(props.debugMode, "Ran on proceed and clicked element ", element);
-        },
-        [props.debugMode, props.onProceed, callMxAction]
-    );
+    const OnProceedHandler = useCallback((): void => {
+        callMxAction(props.onProceed);
+        currentElement.current?.click();
+        DebugLog(props.debugMode.value === true, "Ran on proceed and clicked element ", currentElement);
+    }, [props.debugMode, props.onProceed, callMxAction, currentElement]);
 
-    const onClickHandler = useCallback(
+    const onShowPopup = useCallback(
         (element?: HTMLElement): Promise<boolean> => {
+            DebugLog(props.debugMode.value === true, "Called on Show Popup", {
+                show: props.showChoicePopup.value,
+                type: props.popupType,
+                element
+            });
+            currentElement.current = element;
+
             if (props.showChoicePopup.value === true) {
-                return MxConfirmation(
-                    props.bodyText.value as string,
-                    props.proceedCaption.value as string,
-                    props.cancelCaption.value as string,
-                    () => {
-                        OnProceedHandler(element);
-                    },
-                    () => {
-                        callMxAction(props.onCancel);
-                    }
-                );
+                if (props.popupType === "MXCONFIRM") {
+                    return MxConfirmation(
+                        props.bodyText.value as string,
+                        props.proceedCaption.value as string,
+                        props.cancelCaption.value as string,
+                        () => {
+                            OnProceedHandler();
+                            window["unsaved-changes-message-outcome"] = "proceed";
+                        },
+                        () => {
+                            callMxAction(props.onCancel);
+                            window["unsaved-changes-message-outcome"] = "cancel";
+                        }
+                    );
+                } else {
+                    // is custom popup
+                    window["unsaved-changes-message-outcome"] = undefined;
+                    callMxAction(props.showPopup);
+                    return new Promise(resolve => {
+                        // poll until the popup is resolved
+                        activeInterval.current = window.setInterval(() => {
+                            DebugLog(
+                                props.debugMode.value === true,
+                                `checked outcome flag: ${window["unsaved-changes-message-outcome"]}`
+                            );
+                            if (window["unsaved-changes-message-outcome"] === "proceed") {
+                                OnProceedHandler();
+                                resolve(true);
+                                clearInterval(activeInterval.current);
+                            } else if (window["unsaved-changes-message-outcome"] === "cancel") {
+                                callMxAction(props.onCancel);
+                                resolve(false);
+                                clearInterval(activeInterval.current);
+                            }
+                        }, props.checkPopupInterval);
+                    });
+                }
             } else {
-                OnProceedHandler(element);
+                OnProceedHandler();
                 return new Promise(resolve => resolve(true));
             }
         },
@@ -56,7 +88,12 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
             props.proceedCaption,
             props.cancelCaption,
             props.onCancel,
-            callMxAction
+            callMxAction,
+            props.showPopup,
+            props.popupType,
+            props.debugMode.value,
+            currentElement,
+            props.checkPopupInterval
         ]
     );
 
@@ -74,20 +111,19 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
         if (props.mendixObserveType === "BOTH" || props.mendixObserveType === "JAVASCRIPT_ACTION") {
             // Mount a function that the JavaScript action can all to trigger the popup
             window["unsaved-changes-message"] = (): Promise<boolean> => {
-                DebugLog(props.debugMode, `Browser callback with blocking: ${blocking}`);
+                DebugLog(props.debugMode.value === true, `Browser callback with blocking: ${blocking}`);
                 if (blocking) {
-                    return onClickHandler();
+                    return onShowPopup();
                 } else {
                     return new Promise(resolve => resolve(true));
                 }
             };
-
-            return () => {
-                // On unmount, remove the special function
-                window["unsaved-changes-message"] = undefined;
-            };
         }
-    }, [onClickHandler, blocking, props.debugMode, props.mendixObserveType]);
+        return () => {
+            // On unmount, remove the special function
+            window["unsaved-changes-message"] = undefined;
+        };
+    }, [onShowPopup, blocking, props.debugMode, props.mendixObserveType]);
 
     useEffect(() => {
         if (
@@ -110,11 +146,11 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
             props.navMenuSelectors?.value
                 ?.trim()
                 .split(",")
-                .forEach(className => {
-                    document.querySelectorAll(className).forEach(element => newWatchingElements.push(element));
-                });
+                .forEach(className =>
+                    document.querySelectorAll(className).forEach(element => newWatchingElements.push(element))
+                );
 
-            DebugLog(props.debugMode, `Found elements to block: `, newWatchingElements);
+            DebugLog(props.debugMode.value === true, `Found elements to block: `, newWatchingElements);
             setWatchingElements(newWatchingElements);
         }
         return () => {
@@ -141,8 +177,8 @@ export function UnsavedChangesMessage(props: UnsavedChangesMessageContainerProps
                                 <Blocker
                                     key={index}
                                     watchingElement={htmlElement}
-                                    debugMode={props.debugMode}
-                                    onClick={() => onClickHandler(htmlElement as HTMLElement)}
+                                    debugMode={props.debugMode.value === true}
+                                    onClick={() => onShowPopup(htmlElement as HTMLElement)}
                                     watchingClassList={props.watchingSelectors.value as string}
                                     navClassList={props.navMenuSelectors?.value as string}
                                 />

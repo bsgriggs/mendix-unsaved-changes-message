@@ -21,7 +21,7 @@
                     </enumerationValues>
                 </property>
                 <property key="block" type="expression" required="true">
-                    <caption>Block Exit?</caption>
+                    <caption>Block exit?</caption>
                     <description>Boolean expression that determines whether or not to show the message.</description>
                     <returnType type="Boolean" />
                 </property>
@@ -29,20 +29,22 @@
                     required="true">
                     <caption>Show choice popup?</caption>
                     <description>If true, popup will get shown: Proceed or Cancel? 
-If false, no popup will be shown. Action OnProcess will immediately get executed. Useful for running an action when the user leave the page.</description>
+If false, no popup will be shown. OnProceed will immediately execute. Useful for running an action when the user leave the page.</description>
                     <returnType type="Boolean" />
                 </property>
             </propertyGroup>
-            <propertyGroup caption="Debug Mode">
-                <property key="debugMode" type="boolean" defaultValue="true">
-                    <caption>Debug Mode?</caption>
+            <propertyGroup caption="Debug mode">
+                <property key="debugMode" type="expression" required="true"
+                    defaultValue="@UnsavedChangesMessage.CONST_DebugUnsavedChanges">
+                    <caption>Debug mode?</caption>
                     <description>DISABLE PRIOR TO PRODUCTION DEPLOYMENT</description>
+                    <returnType type="Boolean" />
                 </property>
             </propertyGroup>
         </propertyGroup>
         <propertyGroup caption="Mendix Observe Mode Settings">
             <property key="mendixObserveType" type="enumeration" defaultValue="JAVASCRIPT_ACTION">
-                <caption>In-App Block Type</caption>
+                <caption>In-app block type</caption>
                 <description>How should in-app navigation be blocked?
 Class Names - easier to setup, but do NOT get triggered with keyboard controls.
 JavaScript Action - more effort, but does get triggered with keyboard controls. NOTE: All navigations away from the page MUST call the JavaScript Action provided in the Module 'CheckUnsavedChangesMessage'.</description>
@@ -54,55 +56,83 @@ JavaScript Action - more effort, but does get triggered with keyboard controls. 
             </property>
             <property key="watchingSelectors" type="expression" required="true"
                 defaultValue="'.unsaved-changes-block,.modal-header button'">
-                <caption>Watching Class List</caption>
+                <caption>Watching class list</caption>
                 <description>Comma separated list of JavaScript Selectors used to find actions to prevent.</description>
                 <returnType type="String" />
             </property>
             <property key="navMenuSelectors" type="expression" required="false"
                 defaultValue="'.mx-navigationtree li a:not(.dropbox),.mx-navbar li:not(.dropdown) a'">
-                <caption>Nav Menu Class List</caption>
+                <caption>Nav menu class list</caption>
                 <description>Comma separated list of nav menu JavaScript Selectors to block.
 NOTE: if the widget is in a popup, set this to empty
                     </description>
                 <returnType type="String" />
             </property>
         </propertyGroup>
-        <propertyGroup caption="Text">
-            <property key="bodyText" type="textTemplate" required="true">
-                <caption>Body Text</caption>
-                <description>The main text content. ONLY affects Mendix navigations.</description>
-                <translations>
-                    <translation lang="en_US">You have unsaved changes, are you sure you want to leave?</translation>
-                </translations>
-            </property>
-            <property key="proceedCaption" type="textTemplate" required="true">
-                <caption>Proceed Caption</caption>
-                <description>The text for the confirm button. ONLY affects Mendix navigations.</description>
-                <translations>
-                    <translation lang="en_US">Leave</translation>
-                </translations>
-            </property>
-            <property key="cancelCaption" type="textTemplate" required="true">
-                <caption>Cancel Caption</caption>
-                <description>The text for the cancel button. ONLY affects Mendix navigations.</description>
-                <translations>
-                    <translation lang="en_US">Cancel</translation>
-                </translations>
-            </property>
+        <propertyGroup caption="Popup">
+            <propertyGroup caption="General">
+                <property key="popupType" type="enumeration" defaultValue="MXCONFIRM">
+                    <caption>Popup type</caption>
+                    <description>What kind of popup to show?
+Mx Confirmation - Default Mendix popup with Proceed and Cancel buttons
+Custom Popup - Show any popup. NOTE: All buttons closing the popup MUST call the JavaScript Action provided in the Module 'SetUnsavedChangesOutcome'.</description>
+                    <enumerationValues>
+                        <enumerationValue key="MXCONFIRM">Mx Confirmation</enumerationValue>
+                        <enumerationValue key="CUSTOM">Custom Popup</enumerationValue>
+                    </enumerationValues>
+                </property>
+                <property key="checkPopupInterval" type="integer" required="true" defaultValue="200">
+                    <caption>Check popup interval</caption>
+                    <description>Number of milliseconds between each check if the Custom Popup was closed.</description>
+                </property>
+                <property key="bodyText" type="textTemplate" required="true">
+                    <caption>Body text</caption>
+                    <description>The main text content. ONLY affects Mendix navigations.</description>
+                    <translations>
+                        <translation lang="en_US">You have unsaved changes, are you sure you want to leave?</translation>
+                    </translations>
+                </property>
+                <property key="proceedCaption" type="textTemplate" required="true">
+                    <caption>Proceed caption</caption>
+                    <description>The text for the confirm button. ONLY affects Mendix navigations.</description>
+                    <translations>
+                        <translation lang="en_US">Leave</translation>
+                    </translations>
+                </property>
+                <property key="cancelCaption" type="textTemplate" required="true">
+                    <caption>Cancel caption</caption>
+                    <description>The text for the cancel button. ONLY affects Mendix navigations.</description>
+                    <translations>
+                        <translation lang="en_US">Cancel</translation>
+                    </translations>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="Show popup">
+                <property key="showPopup" type="action" required="true">
+                    <caption>Show popup</caption>
+                    <description>MxAction to open the custom popup.</description>
+                </property>
+            </propertyGroup>
         </propertyGroup>
         <propertyGroup caption="Actions">
-            <property key="onProceed" type="action" required="true">
-                <caption>On Proceed</caption>
-                <description>MxAction fired when the user clicks on the Proceed button.</description>
-            </property>
-            <property key="onCancel" type="action" required="true">
-                <caption>On Cancel</caption>
-                <description>MxAction fired when the user clicks on the Cancel button.</description>
-            </property>
-            <property key="onChangeBlock" type="action" required="false">
-                <caption>On Change Block</caption>
-                <description>MxAction fired when the result of the Block Exit expression changes.</description>
-            </property>
+            <propertyGroup caption="On proceed">
+                <property key="onProceed" type="action" required="false">
+                    <caption>On proceed</caption>
+                    <description>MxAction fired when the user clicks on the Proceed button.</description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="On cancel">
+                <property key="onCancel" type="action" required="false">
+                    <caption>On cancel</caption>
+                    <description>MxAction fired when the user clicks on the Cancel button.</description>
+                </property>
+            </propertyGroup>
+            <propertyGroup caption="On change block">
+                <property key="onChangeBlock" type="action" required="false">
+                    <caption>On change block</caption>
+                    <description>MxAction fired when the result of the Block Exit expression changes.</description>
+                </property>
+            </propertyGroup>
         </propertyGroup>
         <propertyGroup caption="Common">
             <systemProperty key="Name"></systemProperty>

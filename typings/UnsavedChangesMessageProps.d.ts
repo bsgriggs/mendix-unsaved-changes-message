@@ -10,6 +10,8 @@ export type ObserveModeEnum = "mendix" | "browser" | "both";
 
 export type MendixObserveTypeEnum = "CLASS_NAMES" | "JAVASCRIPT_ACTION" | "BOTH";
 
+export type PopupTypeEnum = "MXCONFIRM" | "CUSTOM";
+
 export interface UnsavedChangesMessageContainerProps {
     name: string;
     class: string;
@@ -18,13 +20,16 @@ export interface UnsavedChangesMessageContainerProps {
     observeMode: ObserveModeEnum;
     block: DynamicValue<boolean>;
     showChoicePopup: DynamicValue<boolean>;
-    debugMode: boolean;
+    debugMode: DynamicValue<boolean>;
     mendixObserveType: MendixObserveTypeEnum;
     watchingSelectors: DynamicValue<string>;
     navMenuSelectors?: DynamicValue<string>;
+    popupType: PopupTypeEnum;
+    checkPopupInterval: number;
     bodyText: DynamicValue<string>;
     proceedCaption: DynamicValue<string>;
     cancelCaption: DynamicValue<string>;
+    showPopup?: ActionValue;
     onProceed?: ActionValue;
     onCancel?: ActionValue;
     onChangeBlock?: ActionValue;
@@ -42,13 +47,16 @@ export interface UnsavedChangesMessagePreviewProps {
     observeMode: ObserveModeEnum;
     block: string;
     showChoicePopup: string;
-    debugMode: boolean;
+    debugMode: string;
     mendixObserveType: MendixObserveTypeEnum;
     watchingSelectors: string;
     navMenuSelectors: string;
+    popupType: PopupTypeEnum;
+    checkPopupInterval: number | null;
     bodyText: string;
     proceedCaption: string;
     cancelCaption: string;
+    showPopup: {} | null;
     onProceed: {} | null;
     onCancel: {} | null;
     onChangeBlock: {} | null;

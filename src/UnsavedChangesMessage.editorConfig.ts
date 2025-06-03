@@ -111,12 +111,21 @@ export function getProperties(
             "cancelCaption",
             "onProceed",
             "navMenuSelectors",
-            "mendixObserveType"
+            "mendixObserveType",
+            "showPopup",
+            "popupType",
+            "checkPopupInterval"
         ]);
     }
 
     if (_values.mendixObserveType === "JAVASCRIPT_ACTION") {
         hidePropertiesIn(defaultProperties, _values, ["watchingSelectors", "navMenuSelectors"]);
+    }
+
+    if (_values.popupType === "MXCONFIRM") {
+        hidePropertiesIn(defaultProperties, _values, ["showPopup", "checkPopupInterval"]);
+    } else {
+        hidePropertiesIn(defaultProperties, _values, ["bodyText", "proceedCaption", "cancelCaption"]);
     }
 
     return defaultProperties;
@@ -125,13 +134,29 @@ export function getProperties(
 export function check(_values: UnsavedChangesMessagePreviewProps): Problem[] {
     const errors: Problem[] = [];
     // Add errors to the above array to throw errors in Studio and Studio Pro.
-    // if (_values.observeMode !== "browser" && _values.onProceed === null) {
-    //     errors.push({
-    //         property: `onProceed`,
-    //         message: `On Proceed is required. It should be a Microflow or Nanoflow that rollsback the form object.`,
-    //         url: "https://github.com/bsgriggs/mendix-onBeforeUnload/blob/master/README.md"
-    //     });
-    // }
+    if (_values.checkPopupInterval === null || _values.checkPopupInterval < 50) {
+        errors.push({
+            property: `checkPopupInterval`,
+            message: `Check popup interval must be greater than or equal to 50.`,
+            url: "https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/master/README.md"
+        });
+    }
+
+    if (_values.popupType === "MXCONFIRM" && _values.onProceed === null) {
+        errors.push({
+            property: `onProceed`,
+            message: `On proceed is required. It should rollback the object with unsaved changes.`,
+            url: "https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/master/README.md"
+        });
+    }
+
+    if (_values.popupType === "CUSTOM" && _values.showPopup === null) {
+        errors.push({
+            property: `showPopup`,
+            message: `Show popup is required.`,
+            url: "https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/master/README.md"
+        });
+    }
 
     return errors;
 }
