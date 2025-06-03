@@ -14,8 +14,8 @@ Mendix widget to block the user from closing the browser, closing the tab, or cl
 - Based on a boolean expression, on any Mendix navigation, execute a flow.
 - Based on a boolean expression, block any Mendix navigation with a confirmation message.
 - Tested and works in Chrome, Safari, Microsoft Edge, and Firefox
-- Mode 'JavaScript Action' provided in the module that provides a better UX, see [the Usage section of the ReadMe](https://github.com/bsgriggs/mendix-unsaved-changes-message/edit/master/README.md#usage)
-- Ability to use a custom popup page, see [the Custom Popup section of the ReadMe](https://github.com/bsgriggs/mendix-unsaved-changes-message/edit/master/README.md#custom-popups)
+- Mode 'JavaScript Action' provided in the module that provides a better UX, see [the Usage section of the ReadMe](https://github.com/bsgriggs/mendix-unsaved-changes-message?tab=readme-ov-file#usage)
+- Ability to use a custom popup page, see [the Custom Popup section of the ReadMe](https://github.com/bsgriggs/mendix-unsaved-changes-message?tab=readme-ov-file#custom-popups)
 - Debug mode based on a Server Constant 'CONST_DebugUnsavedChanges'
 
 ## Limitations
