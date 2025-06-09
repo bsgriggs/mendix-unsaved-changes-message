@@ -88,7 +88,10 @@ The following sections are all the settings of the widget. For more info on how 
 ![javaScriptAction](https://github.com/bsgriggs/mendix-unsaved-changes-message/blob/media/utils.png)
 
 > [!Important]  
-> Failure to include the `SetUnsavedMessageOutcome` JavaScript action will negatively affect performance. The browser will continue checking the outcome flag indefinitely. 
+> Failure to include the `SetUnsavedMessageOutcome` JavaScript action will negatively affect performance. The browser will continue checking the outcome flag indefinitely.
+
+> [!Important]  
+> If you need validation messages for the popup's save action, do NOT set the widget's `On Proceed` action. The `On Proceed` action will clear the validation messages.  
 
 ### Save and Leave
 1. Saves the record. The Microflow returns `TRUE` if the Country was valid.
