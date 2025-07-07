@@ -142,7 +142,7 @@ export function check(_values: UnsavedChangesMessagePreviewProps): Problem[] {
         });
     }
 
-    if (_values.popupType === "MXCONFIRM" && _values.onProceed === null) {
+    if (_values.observeMode !== "browser" && _values.popupType === "MXCONFIRM" && _values.onProceed === null) {
         errors.push({
             property: `onProceed`,
             message: `On proceed is required. It should rollback the object with unsaved changes.`,

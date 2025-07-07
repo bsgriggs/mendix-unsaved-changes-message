@@ -1,49 +1,49 @@
 {
-  "name": "unsavedchangesmessage",
-  "widgetName": "UnsavedChangesMessage",
-  "version": "3.0.0",
-  "description": "Mendix widget to block the user from closing the browser, closing the tab, or clicking a Mendix navigation when they have unsaved changes",
-  "copyright": "Benjamin Griggs 2023",
-  "author": "Benjamin Griggs",
-  "engines": {
-    "node": ">=22"
-  },
-  "license": "MIT",
-  "config": {
-    "projectPath": "../../",
-    "mendixHost": "http://localhost:8082",
-    "developmentPort": 3000
-  },
-  "packagePath": "mendix",
-  "scripts": {
-    "start": "pluggable-widgets-tools start:server",
-    "dev": "pluggable-widgets-tools start:web",
-    "build": "pluggable-widgets-tools build:web",
-    "lint": "pluggable-widgets-tools lint",
-    "lint:fix": "pluggable-widgets-tools lint:fix",
-    "prerelease": "npm run lint",
-    "release": "pluggable-widgets-tools release:web"
-  },
-  "devDependencies": {
-    "@mendix/pluggable-widgets-tools": "~10.21.1",
-    "@types/big.js": "^4.0.5",
-    "@types/react-beforeunload": "^2.1.5"
-  },
-  "dependencies": {
-    "react-beforeunload": "^2.6.0"
-  },
-  "resolutions": {
-    "react": "18.2.0",
-    "react-native": "0.72.7",
-    "react-dom": "18.2.0",
-    "@types/react": "18.2.0",
-    "@types/react-dom": "18.2.0"
-  },
-  "overrides": {
-    "react": "18.2.0",
-    "react-native": "0.72.7",
-    "react-dom": "18.2.0",
-    "@types/react": "18.2.0",
-    "@types/react-dom": "18.2.0"
-  }
+    "name": "unsavedchangesmessage",
+    "widgetName": "UnsavedChangesMessage",
+    "version": "3.0.1",
+    "description": "Mendix widget to block the user from closing the browser, closing the tab, or clicking a Mendix navigation when they have unsaved changes",
+    "copyright": "Benjamin Griggs 2023",
+    "author": "Benjamin Griggs",
+    "engines": {
+        "node": ">=22"
+    },
+    "license": "MIT",
+    "config": {
+        "projectPath": "../../",
+        "mendixHost": "http://localhost:8082",
+        "developmentPort": 3000
+    },
+    "packagePath": "mendix",
+    "scripts": {
+        "start": "pluggable-widgets-tools start:server",
+        "dev": "pluggable-widgets-tools start:web",
+        "build": "pluggable-widgets-tools build:web",
+        "lint": "pluggable-widgets-tools lint",
+        "lint:fix": "pluggable-widgets-tools lint:fix",
+        "prerelease": "npm run lint",
+        "release": "pluggable-widgets-tools release:web"
+    },
+    "devDependencies": {
+        "@mendix/pluggable-widgets-tools": "~10.21.1",
+        "@types/big.js": "^4.0.5",
+        "@types/react-beforeunload": "^2.1.5"
+    },
+    "dependencies": {
+        "react-beforeunload": "^2.6.0"
+    },
+    "resolutions": {
+        "react": "18.2.0",
+        "react-native": "0.72.7",
+        "react-dom": "18.2.0",
+        "@types/react": "18.2.0",
+        "@types/react-dom": "18.2.0"
+    },
+    "overrides": {
+        "react": "18.2.0",
+        "react-native": "0.72.7",
+        "react-dom": "18.2.0",
+        "@types/react": "18.2.0",
+        "@types/react-dom": "18.2.0"
+    }
 }
